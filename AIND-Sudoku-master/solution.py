@@ -19,39 +19,7 @@ def assign_value(values, box, value):
 
 
 
-'''
-def naked_twins(values):
-    """Eliminate values using the naked twins strategy.
-    Args:
-        values(dict): a dictionary of the form {'box_name': '123456789', ...}
-    Returns:
-        the values dictionary with the naked twins eliminated from peers.
-    """
-
-    # First select boxes with 2 entries
-    potential_twins = [box for box in values.keys() if len(values[box]) == 2]
-    # Collect boxes that have the same elements
-    naked_twins = [[box1,box2] for box1 in potential_twins \
-                    for box2 in peers[box1] \
-                    if set(values[box1])==set(values[box2]) ]
-
-    # For each pair of naked twins,
-    for i in range(len(naked_twins)):
-        box1 = naked_twins[i][0]
-        box2 = naked_twins[i][1]
-        # 1- compute intersection of peers
-        peers1 = set(peers[box1])
-        peers2 = set(peers[box2])
-        peers_int = peers1 & peers2
-        # 2- Delete the two digits in naked twins from all common peers.
-        for peer_val in peers_int:
-            if len(values[peer_val])>2:
-                for rm_val in values[box1]:
-                    values = assign_value(values, peer_val, values[peer_val].replace(rm_val,''))
-    return values    
-'''
     
-
 def naked_twins(values):
     """Eliminate values using the naked twins strategy.
     Args:
@@ -90,7 +58,12 @@ def cross(a, b):
     return [s+t for s in a for t in b]
 
     
-    
+
+def inner(a, b):
+    inner = []
+    for i in range(len(a)):
+        inner.append(a[i]+b[i])
+    return inner 
     
 def grid_values(grid):
     """
@@ -249,9 +222,15 @@ boxes = cross(rows, cols)
 row_units = [cross(r, cols) for r in rows]
 column_units = [cross(rows, c) for c in cols]
 square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','456','789')]
+diag_units_zip = zip(rows, cols)
+diag_units = inner(rows, cols)
 unitlist = row_units + column_units + square_units
+unitlist_d = row_units + column_units + square_units + diag_units
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)    
+units_d = dict((s, [u for u in unitlist_d if s in u]) for s in boxes)
+peers_d = dict((s, set(sum(units_d[s],[]))-set([s])) for s in boxes)    
+
 
 
 before_naked_twins_1 = {'I6': '4', 'H9': '3', 'I2': '6', 'E8': '1', 'H3': '5', 'H7': '8', 'I7': '1', 'I4': '8',
