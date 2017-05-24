@@ -1,6 +1,13 @@
 # Artificial Intelligence Nanodegree
 ## Introductory Project: Diagonal Sudoku Solver
 
+
+# Terminology
+- The individual squares at the intersection of rows and columns will be called boxes. These boxes will have labels 'A1', 'A2', ..., 'I9'.
+- The complete rows, columns, and 3x3 squares, will be called units. Thus, each unit is a set of 9 boxes, and there are 27 units in total.
+- For a particular box (such as 'A1'), its peers will be all other boxes that belong to a common unit (namely, those that belong to the same row, column, or 3x3 square).
+
+
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
 A: When trying to solve Sudoku, we find that there are some local constraints to each square. These constraints help us narrow the possibilities for the answer, which can be very helpful. Furthermore, by iteratively applying these contraints to the units, we can extract the maximum information and get closer to our solution. 
