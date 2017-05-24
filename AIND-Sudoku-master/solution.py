@@ -19,7 +19,6 @@ def assign_value(values, box, value):
 
 
 
-    
 def naked_twins(values):
     """Eliminate values using the naked twins strategy.
     Args:
@@ -36,37 +35,28 @@ def naked_twins(values):
     for v in values:
         for peer in peers[v]:
             # if this condition fits then they are naked twins
-            if set(values[v]) == set(values[peer]) and len(values[v]) == 2:
+            if values[v] == values[peer] and len(values[v])==2:
                 twins.append([v, peer])
+                
     # get the intersection of peers for the two twin member
     for i in range(len(twins)):
         box1 = twins[i][0]
         box2 = twins[i][1]
         affected = set(peers[box1]) & set(peers[box2])
+        #print(affected)
         for a in affected:
-            if len(values[a]) > 2:
+            if len(values[a]) >= 2:
                 for d in values[box1]:
                     values = assign_value(values, a, values[a].replace(d, ''))
     
     return values
-    
-    
+
     
 
 def cross(a, b):
     # Cross product of elements in A and elements in B
     return [s+t for s in a for t in b]
 
-    
-
-def inner(a, b):
-    inner = []
-    for i in range(len(a)):
-        inner.append(a[i]+b[i])
-    for i in reversed(range(len(a))):
-        inner.append(a[i]+b[i])
-    return [inner]
-    
     
     
 def grid_values(grid):
@@ -228,13 +218,18 @@ row_units = [cross(r, cols) for r in rows]
 column_units = [cross(rows, c) for c in cols]
 square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','456','789')]
 diag_units = [[a[0]+a[1] for a in zip(rows, cols)], [a[0]+a[1] for a in zip(rows, cols[::-1])]]
+
+unitlist_reg = row_units + column_units + square_units
+units_reg = dict((s, [u for u in unitlist_reg if s in u]) for s in boxes)
+peers_reg = dict((s, set(sum(units_reg[s],[]))-set([s])) for s in boxes)    
+
+
 unitlist = row_units + column_units + square_units + diag_units
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)    
 
 
-
-                            
+                        
 if __name__ == '__main__':
     diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
     #diag_sudoku_grid = '4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......'
